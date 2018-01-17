@@ -52,8 +52,12 @@ class TallerController extends Controller
      */
     public function actionView($id)
     {
+        $taller=$this->findModel($id);
+        
+        /*Recuperar el listado de elementos almacenados en la carpeta segun $taller->Url*/
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $taller,
         ]);
     }
 
@@ -67,6 +71,13 @@ class TallerController extends Controller
         $model = new Taller();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            /*Si el taller es creado correctamente en la bd, entonces se crea una nueva carpeta
+            en el spaces de talleres, el nombre de la carpeta es el nombre del taller + fecha de creación.
+            La url de la carpeta creada en spaces es almacenada en el registro del taller creado.
+            */
+
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
