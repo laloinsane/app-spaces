@@ -23,6 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+
     </p>
 
     <?= DetailView::widget([
@@ -34,4 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <button id="subir-archivo" class ="btn btn-primary" data-taller-id = "<?=$model->id ?>">Subir Archivo</button>
+
 </div>
+
+<?php 
+    $this->registerJsFile(
+        '@web/js/upload.js',
+        ['depends' => [\yii\web\JqueryAsset::className()]]
+    );
+?>

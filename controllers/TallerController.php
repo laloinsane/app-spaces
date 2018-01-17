@@ -61,6 +61,18 @@ class TallerController extends Controller
         ]);
     }
 
+    public function actionUpload($id)
+    {
+        $taller=$this->findModel($id);
+        
+        /*funcion que sube un archivo*/
+
+        return "comenzar a subir al taller=".json_encode($taller->nombre); 
+        /*return $this->render('view', [
+            'model' => $taller,
+        ]);*/
+    }
+
     /**
      * Creates a new Taller model.
      * If creation is successful, the browser will be redirected to the 'view' page.
