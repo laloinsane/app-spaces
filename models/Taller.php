@@ -27,8 +27,8 @@ class Taller extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id'], 'required'],
-            [['id'], 'integer'],
+            [['nombre'], 'required'],
+           // [['id'], 'integer'],
             [['nombre'], 'string', 'max' => 20],
             [['url_bucket'], 'string', 'max' => 200],
             [['id'], 'unique'],

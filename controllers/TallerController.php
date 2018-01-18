@@ -46,18 +46,28 @@ class TallerController extends Controller
 
     /**
      * Displays a single Taller model.
+     *Recuperar el listado de elementos almacenados en la carpeta de spaces del taller segun $taller->Url
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        $taller=$this->findModel($id);
-        
-        /*Recuperar el listado de elementos almacenados en la carpeta segun $taller->Url*/
+    
+    $taller=$this->findModel($id);
 
-        return $this->render('view', [
+    //IMPLEMENTAR LA CLASE S3 Y S3Request que se encuentra en la carpeta components
+    // utilizando la libreria //https://github.com/ericnorris/amazon-s3-php
+    //primero crear cliente para usar las librerias => $client = new Yii::$app->S3($access_key, $secret_key ,$endpoint);
+    //las funciones se llaman de la sgte manera => echo Yii::$app->S3->welcome();die();
+    
+
+   /*     endpoint_url='https://nyc3.digitaloceanspaces.com',
+                        aws_access_key_id='R3IT7XCRBGXUXGEOSDKD',
+                        aws_secret_access_key='k5nrioot9Kz79XlAlld6eGPw4FK7QiWffEaShnn8isI'*/
+            return $this->render('view', [
             'model' => $taller,
+
         ]);
     }
 
