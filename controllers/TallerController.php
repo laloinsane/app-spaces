@@ -9,6 +9,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
+
 /**
  * TallerController implements the CRUD actions for Taller model.
  */
@@ -56,6 +59,17 @@ class TallerController extends Controller
     
     $taller=$this->findModel($id);
 
+            $client = new S3Client([
+                'region' => 'nyc3',
+                'version' => '2006-03-01',
+                'endpoint' => 'https://nyc3.digitaloceanspaces.com',
+                    'credentials' => [
+                        'key'    => 'R3IT7XCRBGXUXGEOSDKD',
+                        'secret' => 'k5nrioot9Kz79XlAlld6eGPw4FK7QiWffEaShnn8isI'
+                    ]
+            ]);
+            $buckets = $client->listBuckets();
+
     //IMPLEMENTAR LA CLASE S3 Y S3Request que se encuentra en la carpeta components
     // utilizando la libreria //https://github.com/ericnorris/amazon-s3-php
     //primero crear cliente para usar las librerias => $client = new Yii::$app->S3($access_key, $secret_key ,$endpoint);
@@ -67,6 +81,7 @@ class TallerController extends Controller
                         aws_secret_access_key='k5nrioot9Kz79XlAlld6eGPw4FK7QiWffEaShnn8isI'*/
             return $this->render('view', [
             'model' => $taller,
+           'buckets'=>  $buckets 
 
         ]);
     }

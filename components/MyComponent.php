@@ -10,7 +10,6 @@ class MyComponent extends Component
 {
  public function welcome()
  {
-  echo "Hello..Welcome to MyComponent";
+  //echo "Hello..Welcome to MyComponent";
  }
- 
 }
