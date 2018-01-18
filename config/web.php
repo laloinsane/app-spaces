@@ -13,6 +13,15 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+
+          'S3' => [
+ 
+            'class' => 'app\components\S3',
+ 
+            ],
+
+ 
+
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'GlTbOEe02_azH711pjzoA2wMx5dchK-c',

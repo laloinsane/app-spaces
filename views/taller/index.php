@@ -26,6 +26,16 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+
+              [
+                  'attribute'=> 'nombre',
+                   'label' => 'Taller',
+                   'format' => 'raw',
+                   'value' => function ($data) {
+                            return Html::a('<strong> '. $data->nombre.'</strong>' , ['view', 'id' => $data->id]);
+                        },
+                ],
+
             'id',
             'nombre',
             'url_bucket:url',
