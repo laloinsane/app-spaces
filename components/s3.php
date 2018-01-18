@@ -7,8 +7,10 @@ use yii\base\InvalidConfigException;
 
 class S3 extends Component{
 
-    const DEFAULT_ENDPOINT = 's3.amazonaws.com';
+    //const DEFAULT_ENDPOINT = 's3.amazonaws.com';
 
+    const DEFAULT_ENDPOINT = 'https://nyc3.digitaloceanspaces.com';
+    
     private $access_key;
     private $secret_key;
 
