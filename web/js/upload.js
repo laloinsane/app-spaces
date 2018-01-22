@@ -1,21 +1,35 @@
 $(function(){
-	$('#subir-archivo').click(function(){
-		$('#subir-archivo').prop('disabled',true);
-		var id = $(this).data("taller-id");
-		console.log ($(this).data("taller-id"));
-
-		$.ajax({
-			url:'../taller/upload?id='+id,
-			type:'post',
-			dataType:'text',
-			success: function(data){
-				console.log (data);
-			},
-		}).fail(function(response){
-			alert ("error")
-			console.log (response);
+ 
+	    /*Cargar el archivo y eviar al controlador*/
+		$('#subir-archivo').change(function(evt) {
+			var img = $('#subir-archivo')[0].files[0];
+			var id = $(this).data("taller-id");
+			
+				var filename = this.value.match(/[^\\\/]+$/, '')[0];
+				var fd = new FormData();
+				fd.append('idTaller', id); //
+				fd.append('myfile', $('#subir-archivo')[0].files[0]); //archivo de imagen dado por el usuario
+				fd.append('file', filename); //
+				//  console.log($('#myfile')[0].files[0]);
+				$.ajax({
+					url:'../taller/upload',
+					data: fd,
+					processData: false,
+					contentType: false,
+					headers: {
+						'Content-Type': undefined
+					},
+					type: 'POST',
+					success: function(data) {
+					 console.log(data)
+					},
+				}).fail(function(response) {
+					alert('Error: ' + response.responseText);
+					location.reload();
+				})
+			
 		});
 
-		$('#subir-archivo').prop('disabled',false);
-	});
+
+
 });
