@@ -14,9 +14,9 @@ $config = [
     ],
     'components' => [
 
-          'S3' => [
+          'spaces' => [
  
-            'class' => 'app\components\S3',
+            'class' => 'app\components\Spaces',
  
             ],
 

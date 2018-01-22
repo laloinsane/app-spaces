@@ -56,43 +56,25 @@ class TallerController extends Controller
      */
     public function actionView($id)
     {
-    
-    $taller=$this->findModel($id);
+        $taller=$this->findModel($id);
+  
+        return $this->render('view', [
+        'model' => $taller,
+        'buckets'=>  Yii::$app->spaces->listBuckets() 
 
-            $client = new S3Client([
-                'region' => 'nyc3',
-                'version' => '2006-03-01',
-                'endpoint' => 'https://nyc3.digitaloceanspaces.com',
-                    'credentials' => [
-                        'key'    => 'R3IT7XCRBGXUXGEOSDKD',
-                        'secret' => 'k5nrioot9Kz79XlAlld6eGPw4FK7QiWffEaShnn8isI'
-                    ]
-            ]);
-            $buckets = $client->listBuckets();
-
-    //IMPLEMENTAR LA CLASE S3 Y S3Request que se encuentra en la carpeta components
-    // utilizando la libreria //https://github.com/ericnorris/amazon-s3-php
-    //primero crear cliente para usar las librerias => $client = new Yii::$app->S3($access_key, $secret_key ,$endpoint);
-    //las funciones se llaman de la sgte manera => echo Yii::$app->S3->welcome();die();
-    
-
-   /*     endpoint_url='https://nyc3.digitaloceanspaces.com',
-                        aws_access_key_id='R3IT7XCRBGXUXGEOSDKD',
-                        aws_secret_access_key='k5nrioot9Kz79XlAlld6eGPw4FK7QiWffEaShnn8isI'*/
-            return $this->render('view', [
-            'model' => $taller,
-           'buckets'=>  $buckets 
-
-        ]);
+    ]);
     }
 
-    public function actionUpload($id)
+    public function actionUpload()
     {
-        $taller=$this->findModel($id);
+        $imgfile = isset($_FILES['myfile']) ? $_FILES['myfile']:NULL;   //La imagen
+        $filename = isset($_POST['filename']) ? $_POST['filename']:NULL;//nombre de la imagen
+        $id = isset($_POST['id']) ? $_POST['id']:NULL; // El id de la entidad/tabla que actualiza RutaImg
+        $imgTmpName = $_FILES['myfile']['tmp_name']; // Nombre para identificar y mover el archivo
         
-        /*funcion que sube un archivo*/
+        $url = Yii::$app->spaces->putObjectBucket('nosenose4', $imgTmpName, $filename);
 
-        return "comenzar a subir al taller=".json_encode($taller->nombre); 
+        return $url; 
         /*return $this->render('view', [
             'model' => $taller,
         ]);*/
