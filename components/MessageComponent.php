@@ -15,7 +15,7 @@ class MessageComponent extends Component{
 		if($content!=null){
 			$this->content= $content;
 		}
-		echo Html::encode($this->content);
+		echo $this->content;
 	}
 	
 }
