@@ -9,9 +9,6 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-use Aws\S3\S3Client;
-use Aws\Exception\AwsException;
-
 /**
  * TallerController implements the CRUD actions for Taller model.
  */
@@ -57,12 +54,14 @@ class TallerController extends Controller
     public function actionView($id)
     {
         $taller=$this->findModel($id);
-  
-        return $this->render('view', [
-        'model' => $taller,
-        'buckets'=>  Yii::$app->spaces->listBuckets() 
 
-    ]);
+        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+
+        return $this->render('view', [
+            'model' => $taller,
+            'buckets'=>  Yii::$app->spaces->listBuckets(),
+            'lista_objetos' => Yii::$app->spaces->getFolderBucket('nosenose4', $carpeta),
+        ]);
     }
 
     public function actionUpload()
@@ -71,13 +70,17 @@ class TallerController extends Controller
         $filename = isset($_POST['filename']) ? $_POST['filename']:NULL;//nombre de la imagen
         $id = isset($_POST['id']) ? $_POST['id']:NULL; // El id de la entidad/tabla que actualiza RutaImg
         $imgTmpName = $_FILES['myfile']['tmp_name']; // Nombre para identificar y mover el archivo
-        
-        $url = Yii::$app->spaces->putObjectBucket('nosenose4', $imgTmpName, $filename);
+        $nose = 'wena';
 
-        return $url; 
-        /*return $this->render('view', [
-            'model' => $taller,
-        ]);*/
+        return $filename.','.json_encode($imgfile).', '.$imgTmpName;
+    
+        //$url = Yii::$app->spaces->putObjectBucket('nosenose4', $imgTmpName, $filename);
+
+        /*SUBIR AL ARCHIVO EN LA CARPETA DEL TALLER*/
+
+        //return $url;
+
+    
     }
 
     /**
@@ -96,6 +99,8 @@ class TallerController extends Controller
             La url de la carpeta creada en spaces es almacenada en el registro del taller creado.
             */
 
+            $model->url_bucket= Yii::$app->spaces->putFolderBucket('nosenose4', $model->nombre.date('d-m-Y'));
+            $model->save();
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

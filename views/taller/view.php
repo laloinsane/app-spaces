@@ -16,14 +16,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'url_bucket:url',
         ],
     ]) ?>
+
     <h4>Listado de buckets: </h4>
     <?=json_encode($buckets);?>
+    <hr>
+
+    <h4>Listado de objetos que contiene el bucket: </h4>
+    <?php foreach($lista_objetos as $objeto){ ?>
+        <h1><a href="<?=$model->url_bucket.$objeto ?>" target="_blank"><?= $objeto ?></a></h1>
+    <?php } ?>
     <hr>
 
     <input  name="subir-archivo" accept="image/*" id="subir-archivo" 
     class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
     
-
 </div>
 
 <?php 

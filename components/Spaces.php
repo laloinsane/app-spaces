@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
+
 
 class Spaces extends Component{
     public $content;
@@ -43,17 +45,39 @@ class Spaces extends Component{
                 'SourceFile' => $ruta,
                 'ACL' => 'public-read'
             ]);
-           // $url = $resultado['ObjectURL'];          
+
             $url = $this->client->getObjectUrl($bucket_name, $name);
             
             echo $url;
+
         } catch (S3Exception $e) {
-            //return $e->getMessage();
             echo ($e->getMessage());
         }
 	}
-    
-   
+
+    public function getFolderBucket($bucket_name, $carpeta){
+        $objetos=[];
+
+        try {
+            $objects = $this->client->getIterator('ListObjects', array(
+                'Bucket' => $bucket_name,
+                'Prefix' => $carpeta
+            ));
+
+            foreach ($objects as $object) {
+                if ($object['Key'] != $carpeta) {
+                    $data=substr($object['Key'],strlen($carpeta));
+                    $objetos[]= $data;
+                }
+            }
+
+            return  $objetos;
+
+        } catch (S3Exception $e) {
+            echo $e->getMessage() . "\n";
+        }
+    }
+
 	
 	public function display($content=null){
 		  
