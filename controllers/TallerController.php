@@ -159,4 +159,15 @@ class TallerController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionEliminar($id, $objeto)
+    {
+        $taller=$this->findModel($id);
+
+        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+
+        Yii::$app->spaces->deleteObjectBucket('nosenose4', $carpeta.$objeto);
+
+        return $this->redirect(['view?id='.$id]);
+    }
 }

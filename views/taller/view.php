@@ -21,12 +21,41 @@ $this->params['breadcrumbs'][] = $this->title;
     <?=json_encode($buckets);?>
     <hr>
 
-    <h4>Listado de objetos que contiene el bucket: </h4>
-    <?php foreach($lista_objetos as $objeto){ ?>
-        <h1><a href="<?=$model->url_bucket.$objeto ?>" target="_blank"><?= $objeto ?></a></h1>
-    <?php } ?>
-    <hr>
+    <table>
+        <thead>
+            <tr>
+                <th><h4>Objetos</h4></th>
+                <th><h4>Size</h4></th>
+                <th><h4>Last Modified</h4></th>
+                <th><h4>Opciones</h4></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($lista_objetos as $objeto1) { ?>
+                <?php foreach ($objeto1 as $key => $objeto) { ?>
+                <tr>
+                    <td>
+                        <h4><a href="<?=$model->url_bucket.$objeto ?>" target="_blank"><?= $objeto ?></a></h4>
+                    </td>
+                    <td>
+                        <h4><?= $objeto ?></h4>
+                    </td>
+                    <td>
+                        <h4><?= $objeto ?></h4>
+                    </td>
+                    <td>
+                        <h4><a href="<?=$model->url_bucket.$objeto ?>" target="_blank">ver</a></h4>
+                        <?= Html::a('Eliminar', ['eliminar', 'id' => $model->id, 'objeto' => $objeto], ['class' => 'btn btn-danger']) ?>
+                    </td>
+                </tr>
+                <?php  } ?>
+            <?php  } ?>
 
+        
+        </tbody>
+    </table>
+    <hr>
+ 
     <input  name="subir-archivo" accept="image/*" id="subir-archivo" 
     class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
     
