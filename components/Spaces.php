@@ -37,7 +37,7 @@ class Spaces extends Component{
        return  $bucket_names;
     }
     
-    public function putObjectBucket($bucket_name,$ruta,$name){
+    public function putObjectBucket($bucket_name, $ruta, $name){
         try{
             $resultado = $this->client->putObject([
                 'Bucket'     => $bucket_name,
@@ -64,11 +64,35 @@ class Spaces extends Component{
                 'Prefix' => $carpeta
             ));
 
-            foreach ($objects as $object) {
+            /*foreach ($objects as $object) {
                 if ($object['Key'] != $carpeta) {
                     $data=substr($object['Key'],strlen($carpeta));
                     $objetos[]= $data;
                 }
+            }*/
+
+            //foreach ($objects as $object) {
+                //if ($object['Key'] != $carpeta) {
+                    //$data=$object['Size'];
+                    //$data=substr($object['VersionId'],strlen($carpeta));
+                    //$objetos[]= $data;
+                //}
+            //}
+
+            foreach ($objects as $object) {
+                if ($object['Key'] != $carpeta) {
+                    $nombre=substr($object['Key'],strlen($carpeta));
+                    //$data = array('nombre' => $nombre, 'size' => $object['Size'], 'last' => $object['LastModified']);
+                    $data=[];
+                    $data[]=$nombre;
+                    $data[]=$object['Size'];
+                    $data[]=$object['LastModified'];
+
+                    $objetos[]= $data;
+
+                    
+                }
+                //print_r ($objetos[]);die();
             }
 
             return  $objetos;
@@ -78,10 +102,16 @@ class Spaces extends Component{
         }
     }
 
-	
-	public function display($content=null){
-		  
-		echo "hello from spacescomponent";
-	}
+    public function deleteObjectBucket($bucket_name, $name){
+        try{
+            $resultado = $this->client->deleteObject([
+                'Bucket'     => $bucket_name,
+                'Key'        => $name
+            ]);
+
+        } catch (S3Exception $e) {
+            echo ($e->getMessage());
+        }
+    }
 	
 }
