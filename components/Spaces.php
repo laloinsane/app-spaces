@@ -48,7 +48,23 @@ class Spaces extends Component{
 
             $url = $this->client->getObjectUrl($bucket_name, $name);
             
-            echo $url;
+            return $url;
+
+        } catch (S3Exception $e) {
+            echo ($e->getMessage());
+        }
+    }
+    
+    public function putFolderBucket($bucket_name, $name){
+        try{
+            $resultado = $this->client->putObject([
+                'Bucket'     => $bucket_name,
+                'Key'        => $name.'/',
+            ]);
+
+            $url = $this->client->getObjectUrl($bucket_name, $name.'/');
+            
+            return $url;
 
         } catch (S3Exception $e) {
             echo ($e->getMessage());
@@ -78,24 +94,23 @@ class Spaces extends Component{
                     //$objetos[]= $data;
                 //}
             //}
-
+            $data=[];
             foreach ($objects as $object) {
                 if ($object['Key'] != $carpeta) {
                     $nombre=substr($object['Key'],strlen($carpeta));
-                    //$data = array('nombre' => $nombre, 'size' => $object['Size'], 'last' => $object['LastModified']);
-                    $data=[];
-                    $data[]=$nombre;
-                    $data[]=$object['Size'];
-                    $data[]=$object['LastModified'];
+                    $data = array('nombre' => $nombre, 'size' => $object['Size'], 'last' => $object['LastModified']);
+                 //   $data=[];
+                   // $data[]=$nombre;
+                    //$data[]=$object['Size'];
+                    //$data[]=$object['LastModified'];
 
-                    $objetos[]= $data;
+                   // $objetos[]= $data;
 
-                    
                 }
                 //print_r ($objetos[]);die();
             }
 
-            return  $objetos;
+            return  $data;
 
         } catch (S3Exception $e) {
             echo $e->getMessage() . "\n";
