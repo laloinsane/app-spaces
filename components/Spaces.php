@@ -4,8 +4,6 @@ use yii\helpers\Html;
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 use yii\base\Component;
-use yii\helpers\ArrayHelper;
-
 
 class Spaces extends Component{
     public $content;
@@ -72,7 +70,7 @@ class Spaces extends Component{
 	}
 
     public function getFolderBucket($bucket_name, $carpeta){
-        $objetos=[];
+        $objetos=array();
 
         try {
             $objects = $this->client->getIterator('ListObjects', array(
@@ -80,37 +78,14 @@ class Spaces extends Component{
                 'Prefix' => $carpeta
             ));
 
-            /*foreach ($objects as $object) {
-                if ($object['Key'] != $carpeta) {
-                    $data=substr($object['Key'],strlen($carpeta));
-                    $objetos[]= $data;
-                }
-            }*/
-
-            //foreach ($objects as $object) {
-                //if ($object['Key'] != $carpeta) {
-                    //$data=$object['Size'];
-                    //$data=substr($object['VersionId'],strlen($carpeta));
-                    //$objetos[]= $data;
-                //}
-            //}
-            $data=[];
             foreach ($objects as $object) {
                 if ($object['Key'] != $carpeta) {
                     $nombre=substr($object['Key'],strlen($carpeta));
                     $data = array('nombre' => $nombre, 'size' => $object['Size'], 'last' => $object['LastModified']);
-                 //   $data=[];
-                   // $data[]=$nombre;
-                    //$data[]=$object['Size'];
-                    //$data[]=$object['LastModified'];
-
-                   // $objetos[]= $data;
-
-                }
-                //print_r ($objetos[]);die();
+                    array_push($objetos, $data);
+                }   
             }
-
-            return  $data;
+            return  $objetos;
 
         } catch (S3Exception $e) {
             echo $e->getMessage() . "\n";
@@ -127,6 +102,15 @@ class Spaces extends Component{
         } catch (S3Exception $e) {
             echo ($e->getMessage());
         }
+    }
+
+    public function size($size){
+        $mod = 1024;
+        $units = explode(' ','B KB MB GB TB PB');
+        for ($i = 0; $size > $mod; $i++) {
+            $size /= $mod;
+        }
+        return round($size, 2) . ' ' . $units[$i];
     }
 	
 }

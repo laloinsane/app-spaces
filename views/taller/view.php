@@ -17,15 +17,15 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-<input  name="subir-archivo" accept="image/*" id="subir-archivo" 
-    class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
-    
-<div class="progress">
-  <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
-  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
-    40% Complete (success)
-  </div>
-</div>
+    <input  name="subir-archivo" accept="image/*" id="subir-archivo" class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
+    <hr>
+
+    <div class="progress">
+      <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
+      aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:40%">
+        40% Complete (success)
+      </div>
+    </div>
     <hr>
 
     <table>
@@ -38,32 +38,30 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
         </thead>
         <tbody>
-
-            <?php
-      // print_r($lista_objetos);
-            foreach ($lista_objetos as $objeto) { ?>
+            <?php foreach ($lista_objetos as $objeto => $detalles) { ?>
                 <tr>
+                    <?php foreach ($detalles as $indice => $valor) { ?>
+                        <td>
+                            <?php if($valor == $detalles['size']) { ?>
+                                <h4> <?= Yii::$app->spaces->size($valor); ?> </h4>
+                            <?php  } else { ?>
+                                <?php if($valor == $detalles['last']) { ?>
+                                    <h4> <?= $valor->format('Y-m-d H:i'); ?> </h4>
+                                <?php  } else { ?>
+                                    <h4> <?= $valor; ?> </h4>
+                                <?php  } ?>
+                            <?php  } ?>
+                        </td>
+                    <?php  } ?>
                     <td>
-                        <h4><a href="<?=$model->url_bucket.$objeto ?>" target="_blank"><?= $objeto[0]['nombre'] ?></a></h4>
-                    </td>
-                    <td>
-                        <h4><?= $objeto['size'] ?></h4>
-                    </td>
-                    <td>
-                        <h4><?= $objeto['last'] ?></h4>
-                    </td>
-                    <td>
-                        <h4><a href="<?=$model->url_bucket.$objeto ?>" target="_blank">ver</a></h4>
-                        <?= Html::a('Eliminar', ['eliminar', 'id' => $model->id, 'objeto' => $objeto], ['class' => 'btn btn-danger']) ?>
+                        <h4><a href="<?=$model->url_bucket.$detalles['nombre'] ?>" target="_blank">ver</a></h4>
+                        <?= Html::a('Eliminar', ['eliminar', 'id' => $model->id, 'objeto' => $detalles['nombre']], ['class' => 'btn btn-danger']) ?>
                     </td>
                 </tr>
             <?php  } ?>
-
-        
         </tbody>
     </table>
     <hr>
- 
 
 </div>
 
