@@ -64,17 +64,31 @@ class TallerController extends Controller
         ]);
     }
 
+    public function actionSubir($id)
+    {
+        $taller=$this->findModel($id);
+
+        echo $id;die();
+
+
+    }
+
     public function actionUpload()
     {
         $imgfile = isset($_FILES['myfile']) ? $_FILES['myfile']:NULL;   //La imagen
         $filename = isset($_POST['filename']) ? $_POST['filename']:NULL;//nombre de la imagen
         $id = isset($_POST['id']) ? $_POST['id']:NULL; // El id de la entidad/tabla que actualiza RutaImg
-        $imgTmpName = $_FILES['myfile']['tmp_name']; // Nombre para identificar y mover el archivo
+        $ruta_tmp = $_FILES['myfile']['tmp_name']; // Nombre para identificar y mover el archivo
         $nose = 'wena';
 
-        return $filename.','.json_encode($imgfile).', '.$imgTmpName;
-    
-        //$url = Yii::$app->spaces->putObjectBucket('nosenose4', $imgTmpName, $filename);
+        $taller=$this->findModel($id);
+
+        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+
+        $url = Yii::$app->spaces->putObjectBucket('nosenose4', $ruta_tmp, $carpeta.$filename);
+
+        return $url;
+       // return $filename.', '.$ruta_tmp.', '.$url; //$url.', '.$filename.','.json_encode($imgfile).', '.$imgTmpName;
 
         /*SUBIR AL ARCHIVO EN LA CARPETA DEL TALLER*/
 

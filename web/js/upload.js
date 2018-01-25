@@ -7,9 +7,9 @@ $(function(){
 			
 				var filename = this.value.match(/[^\\\/]+$/, '')[0];
 				var fd = new FormData();
-				fd.append('idTaller', id); //
+				fd.append('id', id); //
 				fd.append('myfile', $('#subir-archivo')[0].files[0]); //archivo de imagen dado por el usuario
-				fd.append('file', filename); //
+				fd.append('filename', filename); //
 				//  console.log($('#myfile')[0].files[0]);
 				$.ajax({
 					url:'../taller/upload',
@@ -22,12 +22,13 @@ $(function(){
 					type: 'POST',
 					success: function(data) {
 					 console.log(data)
+					 location.reload();
 					},
 				}).fail(function(response) {
 					alert('Error: ' + response.responseText);
 					location.reload();
 				})
-			
+			//https://stackoverflow.com/questions/15410265/file-upload-progress-bar-with-jquery
 		});
 
 
