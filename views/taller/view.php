@@ -17,8 +17,12 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <input  name="subir-archivo" accept="image/*" id="subir-archivo" class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
+    <input  name="subir-archivo" accept="*" id="subir-archivo" class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
     <hr>
+    
+    <div>
+        <h1 id="nose"></h1>
+    </div>
 
     <div class="progress">
       <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"

@@ -35,13 +35,14 @@ class Spaces extends Component{
        return  $bucket_names;
     }
     
-    public function putObjectBucket($bucket_name, $ruta, $name){
+    public function putObjectBucket($bucket_name, $type, $ruta, $name){
         try{
             $resultado = $this->client->putObject([
                 'Bucket'     => $bucket_name,
                 'Key'        => $name,
                 'SourceFile' => $ruta,
-                'ACL' => 'public-read'
+                'ACL' => 'public-read',
+                'ContentType' => $type,
             ]);
 
             $url = $this->client->getObjectUrl($bucket_name, $name);

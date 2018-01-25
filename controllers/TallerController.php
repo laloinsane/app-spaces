@@ -78,6 +78,7 @@ class TallerController extends Controller
         $imgfile = isset($_FILES['myfile']) ? $_FILES['myfile']:NULL;   //La imagen
         $filename = isset($_POST['filename']) ? $_POST['filename']:NULL;//nombre de la imagen
         $id = isset($_POST['id']) ? $_POST['id']:NULL; // El id de la entidad/tabla que actualiza RutaImg
+          $type = isset($_POST['type']) ? $_POST['type']:NULL;
         $ruta_tmp = $_FILES['myfile']['tmp_name']; // Nombre para identificar y mover el archivo
         $nose = 'wena';
 
@@ -85,7 +86,7 @@ class TallerController extends Controller
 
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
 
-        $url = Yii::$app->spaces->putObjectBucket('nosenose4', $ruta_tmp, $carpeta.$filename);
+        $url = Yii::$app->spaces->putObjectBucket('nosenose4', $type, $ruta_tmp, $carpeta.$filename);
 
         return $url;
        // return $filename.', '.$ruta_tmp.', '.$url; //$url.', '.$filename.','.json_encode($imgfile).', '.$imgTmpName;
