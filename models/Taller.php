@@ -30,6 +30,7 @@ class Taller extends \yii\db\ActiveRecord
             [['nombre'], 'required'],
            // [['id'], 'integer'],
             [['nombre'], 'string', 'max' => 20],
+            ['nombre', 'match', 'pattern'=>'/^[a-zA-Z ñÑáéíóú]*$/', 'message'=>'Your thoughts should form a complete sentence of alphabetic characters.'],
             [['url_bucket'], 'string', 'max' => 200],
             [['id'], 'unique'],
         ];

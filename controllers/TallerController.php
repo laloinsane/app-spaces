@@ -59,18 +59,14 @@ class TallerController extends Controller
 
         return $this->render('view', [
             'model' => $taller,
-            'buckets'=>  Yii::$app->spaces->listBuckets(),
-            'lista_objetos' => Yii::$app->spaces->getFolderBucket('nosenose4', $carpeta),
+            'lista_objetos' => Yii::$app->spaces->getFolderBucket($carpeta),
         ]);
     }
 
     public function actionSubir($id)
     {
         $taller=$this->findModel($id);
-
         echo $id;die();
-
-
     }
 
     public function actionUpload()
@@ -86,7 +82,7 @@ class TallerController extends Controller
 
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
 
-        $url = Yii::$app->spaces->putObjectBucket('nosenose4', $type, $ruta_tmp, $carpeta.$filename);
+        $url = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$filename);
 
         return $url;
        // return $filename.', '.$ruta_tmp.', '.$url; //$url.', '.$filename.','.json_encode($imgfile).', '.$imgTmpName;
@@ -114,7 +110,7 @@ class TallerController extends Controller
             La url de la carpeta creada en spaces es almacenada en el registro del taller creado.
             */
 
-            $model->url_bucket= Yii::$app->spaces->putFolderBucket('nosenose4', $model->nombre.date('d-m-Y'));
+            $model->url_bucket= Yii::$app->spaces->putFolderBucket($model->nombre.date('d-m-Y'));
             $model->save();
 
             return $this->redirect(['view', 'id' => $model->id]);
@@ -181,7 +177,7 @@ class TallerController extends Controller
 
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
 
-        Yii::$app->spaces->deleteObjectBucket('nosenose4', $carpeta.$objeto);
+        Yii::$app->spaces->deleteObjectBucket($carpeta.$objeto);
 
         return $this->redirect(['view?id='.$id]);
     }
