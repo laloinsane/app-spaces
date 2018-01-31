@@ -4,6 +4,7 @@ use Yii;
 use yii\helpers\Html;
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
+use Aws\S3\Exception\S3Exception;
 use yii\base\Component;
 
 class Spaces extends Component{
@@ -76,10 +77,12 @@ class Spaces extends Component{
 
             $url = $this->client->getObjectUrl($this->bucket_name, $this->prepareName($name).'/');
             
-            return $url;
+            $result = array('status' => 200, 'result' => $url);
+            return $result;
 
         } catch (S3Exception $e) {
-            echo ($e->getMessage());
+            $result = array('status' => 400, 'result' => $e->getMessage());
+            return $result;
         }
 	}
 

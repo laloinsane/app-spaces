@@ -103,17 +103,25 @@ class TallerController extends Controller
     {
         $model = new Taller();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
 
             /*Si el taller es creado correctamente en la bd, entonces se crea una nueva carpeta
             en el spaces de talleres, el nombre de la carpeta es el nombre del taller + fecha de creación.
             La url de la carpeta creada en spaces es almacenada en el registro del taller creado.
             */
+            $arr_result = Yii::$app->spaces->putFolderBucket($model->nombre.date('d-m-Y'));
 
-            $model->url_bucket= Yii::$app->spaces->putFolderBucket($model->nombre.date('d-m-Y'));
-            $model->save();
+            if ($arr_result['status']==200) {
+                $model->url_bucket = $arr_result['result'];
+                $model->save();
 
-            return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                if ($arr_result['status']==400) {
+                    echo($arr_result['result']); die();
+                    return $this->redirect(['index']);
+                }
+            }
         }
 
         return $this->render('create', [
