@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($lista_objetos as $objeto => $detalles) { ?>
+            <?php foreach ($lista_objetos['result'] as $objeto => $detalles) { ?>
                 <tr>
                     <?php foreach ($detalles as $indice => $valor) { ?>
                         <td>

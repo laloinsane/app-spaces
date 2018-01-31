@@ -57,10 +57,19 @@ class TallerController extends Controller
 
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
 
-        return $this->render('view', [
-            'model' => $taller,
-            'lista_objetos' => Yii::$app->spaces->getFolderBucket($carpeta),
-        ]);
+        $arr_result = Yii::$app->spaces->getFolderBucket($carpeta);
+
+        if ($arr_result['status']==200) {
+            return $this->render('view', [
+                'model' => $taller,
+                'lista_objetos' => $arr_result,
+            ]);
+        } else {
+            if ($arr_result['status']==400) {
+                echo($arr_result['result']); die();
+                return $this->redirect(['index']);
+            }
+        }
     }
 
     public function actionSubir($id)
@@ -82,16 +91,20 @@ class TallerController extends Controller
 
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
 
-        $url = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$filename);
-
-        return $url;
-       // return $filename.', '.$ruta_tmp.', '.$url; //$url.', '.$filename.','.json_encode($imgfile).', '.$imgTmpName;
-
-        /*SUBIR AL ARCHIVO EN LA CARPETA DEL TALLER*/
+        //$url = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$filename);
 
         //return $url;
 
-    
+        $arr_result = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$filename);
+
+        if ($arr_result['status']==200) {
+            return $arr_result['result'];
+        } else {
+            if ($arr_result['status']==400) {
+                echo($arr_result['result']); die();
+                return $this->redirect(['index']);
+            }
+        }
     }
 
     /**
@@ -182,11 +195,17 @@ class TallerController extends Controller
     public function actionEliminar($id, $objeto)
     {
         $taller=$this->findModel($id);
-
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+        $arr_result = Yii::$app->spaces->deleteObjectBucket($carpeta.$objeto);
 
-        Yii::$app->spaces->deleteObjectBucket($carpeta.$objeto);
-
-        return $this->redirect(['view?id='.$id]);
+        if ($arr_result['status']==200) {
+            return $this->redirect(['view?id='.$id]);
+        } else {
+            if ($arr_result['status']==400) {
+                echo($arr_result['result']); die();
+                return $this->redirect(['index']);
+            }
+        }
     }
+
 }

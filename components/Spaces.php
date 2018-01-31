@@ -98,10 +98,12 @@ class Spaces extends Component{
 
             $url = $this->client->getObjectUrl($this->bucket_name, $this->prepareName($name));
             
-            return $url;
+            $result = array('status' => 200, 'result' => $url);
+            return $result;
 
         } catch (S3Exception $e) {
-            echo ($e->getMessage());
+            $result = array('status' => 400, 'result' => $e->getMessage());
+            return $result;
         }
     }
 
@@ -121,10 +123,13 @@ class Spaces extends Component{
                     array_push($objetos, $data);
                 }   
             }
-            return  $objetos;
+
+            $result = array('status' => 200, 'result' => $objetos);
+            return $result;
 
         } catch (S3Exception $e) {
-            echo $e->getMessage() . "\n";
+            $result = array('status' => 400, 'result' => $e->getMessage());
+            return $result;
         }
     }
 
@@ -135,8 +140,12 @@ class Spaces extends Component{
                 'Key'        => $name
             ]);
 
+            $result = array('status' => 200);
+            return $result;
+
         } catch (S3Exception $e) {
-            echo ($e->getMessage());
+            $result = array('status' => 400, 'result' => $e->getMessage());
+            return $result;
         }
     }
 
