@@ -77,11 +77,11 @@ class Spaces extends Component{
 
             $url = $this->client->getObjectUrl($this->bucket_name, $this->prepareName($name).'/');
             
-            $result = array('status' => 200, 'result' => $url);
+            $result = array('status' => 200, 'result' => $url, 'message' => 'Carpeta de almacenamiento creada con éxito!');
             return $result;
 
         } catch (S3Exception $e) {
-            $result = array('status' => 400, 'result' => $e->getMessage());
+            $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha creado ninguna carpeta de almacenamiento!');
             return $result;
         }
 	}
@@ -121,14 +121,14 @@ class Spaces extends Component{
                     $nombre=substr($object['Key'],strlen($carpeta));
                     $data = array('nombre' => $nombre, 'size' => $object['Size'], 'last' => $object['LastModified']);
                     array_push($objetos, $data);
-                }   
+                }
             }
 
-            $result = array('status' => 200, 'result' => $objetos);
+            $result = array('status' => 200, 'result' => $objetos, 'message' => 'Elementos obtenidos con éxito');
             return $result;
 
         } catch (S3Exception $e) {
-            $result = array('status' => 400, 'result' => $e->getMessage());
+            $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha obtenido los elementos correspondientes a la carpeta');
             return $result;
         }
     }
@@ -140,11 +140,11 @@ class Spaces extends Component{
                 'Key'        => $name
             ]);
 
-            $result = array('status' => 200);
+            $result = array('status' => 200, 'result' => 'Delete OK', 'message' => 'Elemento eliminado con éxito!');
             return $result;
 
         } catch (S3Exception $e) {
-            $result = array('status' => 400, 'result' => $e->getMessage());
+            $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha eliminado el elemento');
             return $result;
         }
     }

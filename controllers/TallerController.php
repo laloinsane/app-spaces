@@ -55,19 +55,40 @@ class TallerController extends Controller
     {
         $taller=$this->findModel($id);
 
-        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
-
-        $arr_result = Yii::$app->spaces->getFolderBucket($carpeta);
-
-        if ($arr_result['status']==200) {
+        if (empty($taller->url_bucket)) {
             return $this->render('view', [
                 'model' => $taller,
-                'lista_objetos' => $arr_result,
             ]);
         } else {
-            if ($arr_result['status']==400) {
-                echo($arr_result['result']); die();
-                return $this->redirect(['index']);
+            $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+
+            $arr_result = Yii::$app->spaces->getFolderBucket($carpeta);
+
+            if ($arr_result['status']==200) {
+                Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-success alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <strong> '.$arr_result['message'].' </strong></div>'
+                );
+
+                return $this->render('view', [
+                    'model' => $taller,
+                    'error' => false,
+                    'lista_objetos' => $arr_result,
+                ]);
+            } else {
+                if ($arr_result['status']==400) {
+                    Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        <strong> '.$arr_result['message'].' </strong><small> ('.$arr_result['result'].') </small></div>'
+                    );
+
+                    return $this->render('view', [
+                        'model' => $taller,
+                        'error' => true,
+                    ]);
+                }
             }
         }
     }
@@ -127,12 +148,21 @@ class TallerController extends Controller
             if ($arr_result['status']==200) {
                 $model->url_bucket = $arr_result['result'];
                 $model->save();
-
+                 Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-success alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <strong> '.$arr_result['message'].' </strong> </br> Desde ahora en adelante puedes almacenar y administrar contenido multimedia referente a esté taller.</div>'
+                );
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 if ($arr_result['status']==400) {
-                    echo($arr_result['result']); die();
-                    return $this->redirect(['index']);
+                    $model->save();
+                     Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        <strong> '.$arr_result['message'].' </strong> </br> Necesitas crear una carpeta de almacenamiento para poder agregar contenido multimedia.</div>'
+                    );
+                    return $this->redirect(['view', 'id' => $model->id]);
                 }
             }
         }
@@ -199,11 +229,20 @@ class TallerController extends Controller
         $arr_result = Yii::$app->spaces->deleteObjectBucket($carpeta.$objeto);
 
         if ($arr_result['status']==200) {
+            Yii::$app->session->setFlash('msg', '
+                <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <strong> '.$arr_result['message'].' </strong></div>'
+            );
             return $this->redirect(['view?id='.$id]);
         } else {
             if ($arr_result['status']==400) {
-                echo($arr_result['result']); die();
-                return $this->redirect(['index']);
+                Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <strong> '.$arr_result['message'].' </strong> <small> ('.$arr_result['result'].') </small></div>'
+                );
+                return $this->redirect(['view?id='.$id]);
             }
         }
     }
