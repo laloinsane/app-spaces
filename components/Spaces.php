@@ -36,11 +36,11 @@ class Spaces extends Component{
     }
 
     private function getKey(){
-        return Yii::$app->db->createCommand('select apikey from config;')->queryScalar();
+        return $this->decode(Yii::$app->db->createCommand('select apikey from config;')->queryScalar());
     }
 
     private function getSecret(){
-        return Yii::$app->db->createCommand('select secret from config;')->queryScalar();
+        return $this->decode(Yii::$app->db->createCommand('select secret from config;')->queryScalar());
     }
 
     private function getRegion(){
@@ -57,6 +57,10 @@ class Spaces extends Component{
 
     private function getBucketname(){
         return Yii::$app->db->createCommand('select bucket_name from config;')->queryScalar();
+    }
+
+    private function decode($pass_encode){
+        return base64_decode($pass_encode);
     }
 
     public function listBuckets(){
@@ -107,6 +111,44 @@ class Spaces extends Component{
         }
     }
 
+    public function changeACLpublic($name){
+        try{
+            $resultado = $this->client->putObjectAcl([
+                'Bucket'     => $this->bucket_name,
+                'Key'        => $name,
+                'ACL' => 'public-read',
+            ]);
+            
+            $result = array('status' => 200, 'result' => 'Change OK', 'message' => 'ACL cambiado con éxito!');
+            return $result;
+
+        } catch (S3Exception $e) {
+            $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha cambiado ACL!');
+            return $result;
+        }
+    }
+
+    public function changeACLprivate($name){
+        try{
+            $resultado = $this->client->putObjectAcl([
+                'Bucket'     => $this->bucket_name,
+                'Key'        => $name,
+                'ACL' => 'private',
+            ]);
+            
+            $result = array('status' => 200, 'result' => 'Change OK', 'message' => 'ACL cambiado con éxito!');
+            return $result;
+
+        } catch (S3Exception $e) {
+            $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha cambiado ACL!');
+            return $result;
+        }
+    }
+
+
+    /*Obtiene el listado de objetos de una carpeta
+    *Ordena y devuelve un array con los objetos y sus propiedades: nombre(key), permiso, peso, fecha modif.
+    */
     public function getFolderBucket($carpeta){
         $objetos=array();
 
@@ -118,14 +160,20 @@ class Spaces extends Component{
 
             foreach ($objects as $object) {
                 if ($object['Key'] != $carpeta) {
-                    $nombre=substr($object['Key'],strlen($carpeta));
-                    $data = array('nombre' => $nombre, 'size' => $object['Size'], 'last' => $object['LastModified']);
+                    $key=substr($object['Key'], strlen($carpeta));     
+                    $permiso = $this->getACLObject($carpeta.$key);
+                    $data =  ['nombre' => $key, 
+                                'size' => $this->size( $object['Size']), 
+                                'last' => $object['LastModified']->format('Y-m-d H:i')  , 
+                                'permiso' => $permiso['result']
+                            ];
+                    
                     array_push($objetos, $data);
                 }
             }
 
-            $result = array('status' => 200, 'result' => $objetos, 'message' => 'Elementos obtenidos con éxito');
-            return $result;
+           return ['status' => 200, 'result' => $objetos, 'message' => 'Elementos obtenidos con éxito'];
+          
 
         } catch (S3Exception $e) {
             $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha obtenido los elementos correspondientes a la carpeta');
@@ -148,6 +196,25 @@ class Spaces extends Component{
             return $result;
         }
     }
+
+    public function getACLObject($name){
+        try{
+            $resultado = $this->client->getObjectAcl([
+                'Bucket'     => $this->bucket_name,
+                'Key'        => $name
+            ]);
+           
+
+           return  ['status' => 200, 'result' =>  $resultado->get('Grants')[0]["Permission"].'', 
+                        'message' => 'El ACL se ha recuperado con éxito!'];
+           
+
+        } catch (S3Exception $e) {
+            $result = array('status' => 400, 'result' => $e->getMessage(), 'message' => 'No se ha recuperado el ACL');
+            return $result;
+        }
+    }
+ 
 
     public function size($size){
         $mod = 1024;

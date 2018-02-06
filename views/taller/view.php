@@ -20,11 +20,44 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
+    <img src="https://nosenose4.nyc3.digitaloceanspaces.com/raichu31-01-2018/61wxghabxdl._sl1000__large.jpg">
+
     <?php if (empty($model->url_bucket)) { ?>
 
     <?php } else { ?>
 
         <?php if ($error == false) { ?>
+
+            
+<div class="container">
+     
+
+
+            <div class="row">
+                <h3>jQuery Ajax file upload with percentage progress bar</h3>
+                <form id="myform" method="post">
+
+                    <div class="form-group">
+                        <label>Enter the file name: </label>
+                        <input class="form-control" type="text" id="filename" /> 
+                    </div>
+                    <div class="form-group">
+                        <label>Select file: </label>
+                        <input class="form-control" type="file" id="myfile" data-taller-id="<?=$model->id?>"/>
+                    </div>
+                    <div class="form-group">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-success myprogress" role="progressbar" style="width:0%">0%</div>
+                        </div>
+
+                        <div class="msg"></div>
+                    </div>
+
+                    <input type="button" id="btn" class="btn-success" value="Upload" />
+                </form>
+            </div>
+        </div>
+        <hr>
             <input  name="subir-archivo" accept="*" id="subir-archivo" class ="btn btn-primary" data-taller-id = "<?=$model->id ?>" type="file" value="Subir Archivo" >
             <hr>
         
@@ -40,35 +73,50 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <hr>
 
-            <table>
+            <table class="table-bordered table">
                 <thead>
                     <tr>
                         <th><h4>Elemento</h4></th>
                         <th><h4>Size</h4></th>
+                          <th><h4>Permiso</h4></th>
                         <th><h4>Last Modified</h4></th>
                         <th><h4>Opciones</h4></th>
+                          <th><h4>cambiar permisos</h4></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($lista_objetos['result'] as $objeto => $detalles) { ?>
                         <tr>
-                            <?php foreach ($detalles as $indice => $valor) { ?>
-                                <td>
-                                    <?php if($valor == $detalles['size']) { ?>
-                                        <h4> <?= Yii::$app->spaces->size($valor); ?> </h4>
-                                    <?php  } else { ?>
-                                        <?php if($valor == $detalles['last']) { ?>
-                                            <h4> <?= $valor->format('Y-m-d H:i'); ?> </h4>
-                                        <?php  } else { ?>
-                                            <h4> <?= $valor; ?> </h4>
-                                        <?php  } ?>
-                                    <?php  } ?>
-                                </td>
-                            <?php  } ?>
+
+                            <td>
+                                <?= $detalles['nombre'] ?>
+                            </td>
+
+                            <td>
+                                <?= $detalles['size'] ?>
+                            </td>
+
+                                                        <td>
+                                <?= $detalles['permiso'] ?>
+                            </td>
+
+                            <td>
+                                <?= $detalles['last'] ?>
+                            </td>
+                                
+
                             <td>
                                 <h4><a href="<?=$model->url_bucket.$detalles['nombre'] ?>" target="_blank">ver</a></h4>
                                 <?= Html::a('Eliminar', ['eliminar', 'id' => $model->id, 'objeto' => $detalles['nombre']], ['class' => 'btn btn-danger']) ?>
                             </td>
+                            <td>
+
+                                <?= 
+                                    Html::a('Privado', ['private', 'id' => $model->id, 'objeto' => $detalles['nombre']], ['class' => 'btn btn-success']).'<br><br>'.
+
+                                    Html::a('Publico', ['public', 'id' => $model->id, 'objeto' => $detalles['nombre']], ['class' => 'btn btn-success']) ?>
+                            </td>
+                           
                         </tr>
                     <?php  } ?>
                 </tbody>

@@ -1,6 +1,69 @@
 $(function(){
+
+
+	$('#btn').click(function () {
+		$('.myprogress').css('width', '0');
+        $('.msg').text('');
+        
+       	var myfile = $('#myfile').val();
+        if (myfile == '') {
+            alert('Please enter file name and select file');
+            return;
+        }
+
+		var file = $('#myfile')[0].files[0];
+        var id = $('#myfile').data("taller-id");
+
+        var formData = new FormData();
+        formData.append('file', file);
+        console.info("file", formData.getAll("file"));
+        formData.append('id', id);
+        formData.append('name', file.name);
+        formData.append('type', file.type);
+
+        $('#btn').attr('disabled', 'disabled');
+        $('.msg').text('Uploading in progress...');
+
+ 		  $.ajax({
+                        url: '../taller/upload',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        // this part is progress bar
+                        xhr: function () {
+
+                          
+                            var xhr = new window.XMLHttpRequest();
+
+                              xhr.upload.onprogress = function(e){
+                                var done = e.position || e.loaded, total = e.totalSize || e.total;
+                                var present = Math.floor(done/total*100)
+                                console.log(done,present)
+                              //  document.getElementById('.myprogress').innerHTML = present + '%';
+                                   $('.myprogress').css('width', present + '%');
+                            }
+
+                           /* xhr.upload.addEventListener("progress", function (evt) {
+                                if (evt.lengthComputable) {
+                                    var percentComplete = evt.loaded / evt.total;
+                                    percentComplete = parseInt(percentComplete * 100);
+                                    $('.myprogress').text(percentComplete + '%');
+                                    $('.myprogress').css('width', percentComplete + '%');
+                                }
+                            }, false);*/
+                            return xhr;
+                        },
+                        success: function (data) {
+                            $('.msg').text(data);
+                            $('#btn').removeAttr('disabled');
+                        }
+                    })
+
+	})
+
  
-	    /*Cargar el archivo y eviar al controlador*/
+	    /*Cargar el archivo y eviar al controlador 
 		$('#subir-archivo').change(function(evt) {
 			$('#nose').html('cargando ...');
 			var img = $('#subir-archivo')[0].files[0];
@@ -34,7 +97,7 @@ $(function(){
 			//https://stackoverflow.com/questions/15410265/file-upload-progress-bar-with-jquery
 		});
 
-
+*/
 
 });
 /*$(function(){

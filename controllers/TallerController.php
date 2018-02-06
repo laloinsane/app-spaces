@@ -65,11 +65,11 @@ class TallerController extends Controller
             $arr_result = Yii::$app->spaces->getFolderBucket($carpeta);
 
             if ($arr_result['status']==200) {
-                Yii::$app->session->setFlash('msg', '
+                /*Yii::$app->session->setFlash('msg', '
                     <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                     <strong> '.$arr_result['message'].' </strong></div>'
-                );
+                );*/
 
                 return $this->render('view', [
                     'model' => $taller,
@@ -101,6 +101,39 @@ class TallerController extends Controller
 
     public function actionUpload()
     {
+        if (isset($_POST) and $_SERVER['REQUEST_METHOD'] == "POST") {
+
+            $name = isset($_POST['name']) ? $_POST['name']:NULL;
+            $id = isset($_POST['id']) ? $_POST['id']:NULL;
+            $type = isset($_POST['type']) ? $_POST['type']:NULL;
+
+            $ruta_tmp = $_FILES['file']['tmp_name'];
+
+
+            $taller=$this->findModel($id);
+            $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+
+            $arr_result = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$name);
+
+        if ($arr_result['status']==200) {
+            echo "wena";
+            //var_dump($arr_result['result']); die();
+            return $arr_result['result'];
+        } else {
+            if ($arr_result['status']==400) {
+                echo('charcha'); //die();
+                return $this->redirect(['index']);
+            }
+        }
+
+            exit;
+        }
+
+
+    }
+/*
+    public function actionUpload()
+    {
         $imgfile = isset($_FILES['myfile']) ? $_FILES['myfile']:NULL;   //La imagen
         $filename = isset($_POST['filename']) ? $_POST['filename']:NULL;//nombre de la imagen
         $id = isset($_POST['id']) ? $_POST['id']:NULL; // El id de la entidad/tabla que actualiza RutaImg
@@ -127,6 +160,7 @@ class TallerController extends Controller
             }
         }
     }
+    */
 
     /**
      * Creates a new Taller model.
@@ -227,6 +261,57 @@ class TallerController extends Controller
         $taller=$this->findModel($id);
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
         $arr_result = Yii::$app->spaces->deleteObjectBucket($carpeta.$objeto);
+
+        if ($arr_result['status']==200) {
+            Yii::$app->session->setFlash('msg', '
+                <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <strong> '.$arr_result['message'].' </strong></div>'
+            );
+            return $this->redirect(['view?id='.$id]);
+        } else {
+            if ($arr_result['status']==400) {
+                Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <strong> '.$arr_result['message'].' </strong> <small> ('.$arr_result['result'].') </small></div>'
+                );
+                return $this->redirect(['view?id='.$id]);
+            }
+        }
+    }
+
+    public function actionPrivate($id, $objeto)
+    {
+        $taller=$this->findModel($id);
+        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+        $arr_result = Yii::$app->spaces->changeACLprivate($carpeta.$objeto);
+
+        if ($arr_result['status']==200) {
+            Yii::$app->session->setFlash('msg', '
+                <div class="alert alert-success alert-dismissable">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <strong> '.$arr_result['message'].' </strong></div>'
+            );
+            return $this->redirect(['view?id='.$id]);
+        } else {
+            if ($arr_result['status']==400) {
+                Yii::$app->session->setFlash('msg', '
+                    <div class="alert alert-danger alert-dismissable">
+                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                    <strong> '.$arr_result['message'].' </strong> <small> ('.$arr_result['result'].') </small></div>'
+                );
+                return $this->redirect(['view?id='.$id]);
+            }
+        }
+    }
+
+    public function actionPublic($id, $objeto)
+    {
+        $taller=$this->findModel($id);
+        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
+       // $arr_result = Yii::$app->spaces->getACLObject($carpeta.$objeto);
+        $arr_result = Yii::$app->spaces->changeACLpublic($carpeta.$objeto);
 
         if ($arr_result['status']==200) {
             Yii::$app->session->setFlash('msg', '
