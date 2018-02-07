@@ -1,5 +1,6 @@
 $(function(){
 
+$('[data-toggle="tooltip"]').tooltip(); 
 
 	$('#btn').click(function () {
 		$('.myprogress').css('width', '0');

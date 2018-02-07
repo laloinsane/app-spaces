@@ -77,6 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <thead>
                     <tr>
                         <th><h4>Elemento</h4></th>
+                         <th><h4>Formato</h4></th>
                         <th><h4>Size</h4></th>
                           <th><h4>Permiso</h4></th>
                         <th><h4>Last Modified</h4></th>
@@ -85,11 +86,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($lista_objetos['result'] as $objeto => $detalles) { ?>
+                    <?php foreach ($lista_objetos['result'] as $objeto => $detalles) { 
+
+            $htmlTooltipPreview    = '<img src="'.$model->url_bucket.$detalles['nombre'] .'">' ;                 ?>
                         <tr>
 
                             <td>
-                                <?= $detalles['nombre'] ?>
+                                <p  data-toggle="tooltip" data-placement="top" 
+                                     data-html="true" title="<?=$htmlTooltipPreview ?>">
+                                       <?= $detalles['nombre'] ?>
+
+                                </p>
+                             
+                            </td>
+
+                             <td>
+                                <?= $detalles['type'] ?>
                             </td>
 
                             <td>

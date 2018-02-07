@@ -160,9 +160,11 @@ class Spaces extends Component{
 
             foreach ($objects as $object) {
                 if ($object['Key'] != $carpeta) {
-                    $key=substr($object['Key'], strlen($carpeta));     
+                    $key=substr($object['Key'], strlen($carpeta));  
+                    $type =$this->getObject($carpeta.$key);
                     $permiso = $this->getACLObject($carpeta.$key);
                     $data =  ['nombre' => $key, 
+                                'type' => $type['result'],
                                 'size' => $this->size( $object['Size']), 
                                 'last' => $object['LastModified']->format('Y-m-d H:i')  , 
                                 'permiso' => $permiso['result']
@@ -205,7 +207,7 @@ class Spaces extends Component{
             ]);
            
 
-           return  ['status' => 200, 'result' =>  $resultado->get('Grants')[0]["Permission"].'', 
+           return  ['status' => 200, 'result' =>  $resultado->get('Grants')[0]["Permission"], 
                         'message' => 'El ACL se ha recuperado con éxito!'];
            
 
@@ -214,7 +216,28 @@ class Spaces extends Component{
             return $result;
         }
     }
- 
+
+      public function getObject($name){
+        try{
+             $result =  $this->client->getObject([
+                        'Bucket' => $this->bucket_name,
+                        'Key' => $name,
+            ]);
+
+
+              return ['status' => 200, 
+                    'result' => $result->get('ContentType'), 
+                    'message' => 'Objeto recuperado con éxito'];
+
+         }
+             catch (S3Exception $e) {
+                return ['status' => 400, 
+                            'result' => $e->getMessage(), 
+                            'message' => 'No se logró recuperar el objeto'];
+               
+            }
+
+        }
 
     public function size($size){
         $mod = 1024;
