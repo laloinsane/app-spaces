@@ -65,12 +65,6 @@ class TallerController extends Controller
             $arr_result = Yii::$app->spaces->getFolderBucket($carpeta);
 
             if ($arr_result['status']==200) {
-                /*Yii::$app->session->setFlash('msg', '
-                    <div class="alert alert-success alert-dismissable">
-                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                    <strong> '.$arr_result['message'].' </strong></div>'
-                );*/
-
                 return $this->render('view', [
                     'model' => $taller,
                     'error' => false,
@@ -93,12 +87,9 @@ class TallerController extends Controller
         }
     }
 
-    public function actionSubir($id)
-    {
-        $taller=$this->findModel($id);
-        echo $id;die();
-    }
-
+    /**
+     * Sube un objeto al interior de una carpeta del Bucket.
+     */
     public function actionUpload()
     {
         if (isset($_POST) and $_SERVER['REQUEST_METHOD'] == "POST") {
@@ -106,61 +97,27 @@ class TallerController extends Controller
             $name = isset($_POST['name']) ? $_POST['name']:NULL;
             $id = isset($_POST['id']) ? $_POST['id']:NULL;
             $type = isset($_POST['type']) ? $_POST['type']:NULL;
-
             $ruta_tmp = $_FILES['file']['tmp_name'];
-
 
             $taller=$this->findModel($id);
             $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
 
             $arr_result = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$name);
 
-        if ($arr_result['status']==200) {
-            echo "wena";
-            //var_dump($arr_result['result']); die();
-            return $arr_result['result'];
-        } else {
-            if ($arr_result['status']==400) {
-                echo('charcha'); //die();
-                return $this->redirect(['index']);
+            if ($arr_result['status']==200) {
+                return $arr_result['message'];
+            } else {
+                if ($arr_result['status']==400) {
+                    Yii::$app->session->setFlash('msg', '
+                        <div class="alert alert-danger alert-dismissable">
+                        <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                        <strong> '.$arr_result['message'].' </strong> <small> ('.$arr_result['result'].') </small></div>'
+                    );
+                }
             }
-        }
-
             exit;
         }
-
-
     }
-/*
-    public function actionUpload()
-    {
-        $imgfile = isset($_FILES['myfile']) ? $_FILES['myfile']:NULL;   //La imagen
-        $filename = isset($_POST['filename']) ? $_POST['filename']:NULL;//nombre de la imagen
-        $id = isset($_POST['id']) ? $_POST['id']:NULL; // El id de la entidad/tabla que actualiza RutaImg
-          $type = isset($_POST['type']) ? $_POST['type']:NULL;
-        $ruta_tmp = $_FILES['myfile']['tmp_name']; // Nombre para identificar y mover el archivo
-        $nose = 'wena';
-
-        $taller=$this->findModel($id);
-
-        $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
-
-        //$url = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$filename);
-
-        //return $url;
-
-        $arr_result = Yii::$app->spaces->putObjectBucket($type, $ruta_tmp, $carpeta.$filename);
-
-        if ($arr_result['status']==200) {
-            return $arr_result['result'];
-        } else {
-            if ($arr_result['status']==400) {
-                echo($arr_result['result']); die();
-                return $this->redirect(['index']);
-            }
-        }
-    }
-    */
 
     /**
      * Creates a new Taller model.
@@ -182,7 +139,7 @@ class TallerController extends Controller
             if ($arr_result['status']==200) {
                 $model->url_bucket = $arr_result['result'];
                 $model->save();
-                 Yii::$app->session->setFlash('msg', '
+                Yii::$app->session->setFlash('msg', '
                     <div class="alert alert-success alert-dismissable">
                     <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                     <strong> '.$arr_result['message'].' </strong> </br> Desde ahora en adelante puedes almacenar y administrar contenido multimedia referente a esté taller.</div>'
@@ -191,7 +148,7 @@ class TallerController extends Controller
             } else {
                 if ($arr_result['status']==400) {
                     $model->save();
-                     Yii::$app->session->setFlash('msg', '
+                    Yii::$app->session->setFlash('msg', '
                         <div class="alert alert-danger alert-dismissable">
                         <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
                         <strong> '.$arr_result['message'].' </strong> </br> Necesitas crear una carpeta de almacenamiento para poder agregar contenido multimedia.</div>'
@@ -310,7 +267,6 @@ class TallerController extends Controller
     {
         $taller=$this->findModel($id);
         $carpeta=substr(parse_url($taller->url_bucket, PHP_URL_PATH),1);
-       // $arr_result = Yii::$app->spaces->getACLObject($carpeta.$objeto);
         $arr_result = Yii::$app->spaces->changeACLpublic($carpeta.$objeto);
 
         if ($arr_result['status']==200) {
