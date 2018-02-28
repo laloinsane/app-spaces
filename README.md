@@ -1,12 +1,12 @@
 # App-spaces
 
-### DESARROLLO - "Spaces App":
+### Desarrollo:
 Por medio de una aplicación PHP sencilla, se implmentarán los distintos comandos para interactuar con subidas y descargas de archivos a servidores de almacenamiento remoto a traves de la API Spaces de la plataforma Digital Ocean. 
 
-### DESCRIPCION:
+### Descripción:
 Se trata de una aplicación que almacena contenidos multimedia de distintos cursos o talleres. Estos talleres estan a cargo de un profesor quien necesita subir material digital para compartir con sus alumnos. La principal ventaja de esta aplicacion web será el poder administrar de manera eficiente la subida y descarga de los distintos formatos y tamaños de archivos. 
 
-### REQUERIMIENTOS:
+### Requerimientos:
 El cliente web de la aplicación debe autentificarse a través de una API Key con el servicio de almacenamiento.
 Dentro de la aplicación, el usuario, al crear un taller debe generar automaticamente una nueva carpeta en el servico de almacenamiento.
 En la vista de cada taller debe existir una interfaz de subida de archivos, con un botón y una barra de progreso.
