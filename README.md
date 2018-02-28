@@ -25,4 +25,7 @@ curl -sS https://getcomposer.org/installer | php
 
 # instalación de dependencias
 php composer.phar install
+
+# permisos
+sudo chmod 777 runtime/ web/assets/
 ```
