@@ -34,3 +34,7 @@ sudo chmod 777 runtime/ web/assets/
 ```
 
 ### Imágenes de demostración
+
+<img src="images/demo/demo_1.png">
+<img src="images/demo/demo_2.png">
+<img src="images/demo/demo_3.png">
