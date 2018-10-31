@@ -1,4 +1,4 @@
-# App-spaces
+# App_spaces
 
 ### Desarrollo:
 Por medio de una aplicación PHP sencilla, se implementarán los distintos comandos para interactuar con subidas y descargas de archivos a servidores de almacenamiento remoto a traves de la API Spaces de la plataforma web Digital Ocean. 
