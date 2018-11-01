@@ -16,7 +16,7 @@ Los tipos de archivos necesarios son: ```.jpg, .pdf, .mp3, .mp4, .wmv, .mpg, .mo
 El código debe ser documentado y escrito con la guia de desarrollo de la API de Spaces y la documentación del framework.
 Debe existir una versión web online para pruebas.
 
-### Construcción
+### Construcción / Modificación
 
 ``` bash
 # instalación de composer en local
